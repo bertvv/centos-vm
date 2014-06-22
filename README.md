@@ -3,8 +3,32 @@
 
 ### Overview
 
-This repository contains templates for Ubuntu that can create Vagrant boxes
+This repository contains templates for CentOS that can create Vagrant boxes
 using Packer.
+
+## CentOS 7 QA
+
+This fork of https://github.com/box-cutter/centos-vm is only created to play
+with the [CentOS 7 public QA release](http://seven.centos.org/2014/06/centos-7-public-qa-release/).
+It should only be considered as a temporary solution, as it works around some issues
+installing VirtualBox Guest Additions in the VM that will probably be resolved
+in one of the next releases. Also, only 64-bit was tested and only VirtualBox
+4.3.12.
+
+Creating and using the box:
+
+* `make virtualbox/centos7qa`
+* `vagrant box add centos7qa-nocm box/virtualbox/centos7qa-nocm.box`
+* `vagrant init centos7qa-nocm`
+* `vagrant up`
+
+And you should have a working CentOS 7 box to play around with...
+
+Known issues:
+
+* A CentOS 7 VM with a host only interface will fail, since Vagrant expects
+  it to have the "old" network interface names (`eth1`, etc. instead of the new
+  names like `enp0s8`). See https://github.com/mitchellh/vagrant/issues/4078
 
 ## Current Boxes
 
