@@ -11,7 +11,6 @@ set -x # Debug output
 
 vb_version=$(cat /home/vagrant/.vbox_version)
 iso=VBoxGuestAdditions_${vb_version}.iso
-url= http://download.virtualbox.org/virtualbox/${vb_version}/${iso}
 
 epel=https://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm
 
@@ -20,7 +19,6 @@ yum install -y ${epel}
 yum install -y patch dkms
 
 # Download Guest Additions Installer
-wget ${url}
 mount -o loop ${iso} /mnt
 /mnt/VBoxLinuxAdditions.run --noexec --keep
 umount /mnt
@@ -30,10 +28,10 @@ cur_dir=$(pwd)
 tmp_dir=$(mktemp -d)
 patch=VBox-numa_no_reset.diff 
 cat > ${patch} << _EOF_
-Index: src/vboxguest-4.3.12/vboxguest/r0drv/linux/memobj-r0drv-linux.c
+Index: src/vboxguest-${vb_version}/vboxguest/r0drv/linux/memobj-r0drv-linux.c
 ===================================================================
---- src/vboxguest-4.3.12/vboxguest/r0drv/linux/memobj-r0drv-linux.c (Revision 50574)
-+++ src/vboxguest-4.3.12/vboxguest/r0drv/linux/memobj-r0drv-linux.c (Arbeitskopie)
+--- src/vboxguest-${vb_version}/vboxguest/r0drv/linux/memobj-r0drv-linux.c (Revision 50574)
++++ src/vboxguest-${vb_version}/vboxguest/r0drv/linux/memobj-r0drv-linux.c (Arbeitskopie)
 @@ -66,6 +66,18 @@
  #endif
  
@@ -75,7 +73,7 @@ tarball=${cur_dir}/install/VBoxGuestAdditions-amd64.tar.bz2
 cd ${tmp_dir}
 tar xjf ${tarball}
 patch -p0 < ${cur_dir}/${patch}
-tar cjf ${tarball}
+tar cjf ${tarball} *
 
 # Run installer
 cd ${cur_dir}/install
