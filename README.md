@@ -17,9 +17,12 @@ in one of the next releases. Also, only 64-bit was tested and only VirtualBox
 
 Creating and using the box:
 
+* `git clone https://github.com/bertvv/centos-vm.git`
+* `cd centos-vm`
+* `git checkout centos7qa`
 * `make virtualbox/centos7qa`
-* `vagrant box add centos7qa-nocm box/virtualbox/centos7qa-nocm.box`
-* `vagrant init centos7qa-nocm`
+* `vagrant box add centos7qa box/virtualbox/centos7qa-nocm.box`
+* `vagrant init centos7qa` (in some other directory)
 * `vagrant up`
 
 And you should have a working CentOS 7 box to play around with...
