@@ -64,9 +64,10 @@
     "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
     "scripts": [
       "script/fix-slow-dns.sh",
+      "script/repo.sh",
       "script/sshd.sh",
       "script/vagrant.sh",
-      "script/vmtool.sh",
+      "script/vbguest-patched.sh",
       "script/cmtool.sh",
       "script/cleanup.sh"
     ]
