@@ -5,7 +5,6 @@
 # This installs VirtualBox's Guest Additions on systems that suffer from
 # this bug: https://www.virtualbox.org/ticket/12638
 
-set -e # abort on nonzero exitstatus
 set -u # abort on unbound variable
 set -x # Debug output
 
@@ -19,6 +18,9 @@ yum install -y ${epel}
 yum install -y patch dkms
 
 # Download Guest Additions Installer
+if [ ! -f ${iso} ]; then
+  wget http://download.virtualbox.org/virtualbox/4.3.12/VBoxGuestAdditions_4.3.12.iso
+fi
 mount -o loop ${iso} /mnt
 /mnt/VBoxLinuxAdditions.run --noexec --keep
 umount /mnt
@@ -26,7 +28,7 @@ umount /mnt
 # Apply patch
 cur_dir=$(pwd)
 tmp_dir=$(mktemp -d)
-patch=VBox-numa_no_reset.diff 
+patch=VBox-numa_no_reset.diff
 cat > ${patch} << _EOF_
 Index: src/vboxguest-${vb_version}/vboxguest/r0drv/linux/memobj-r0drv-linux.c
 ===================================================================
@@ -80,16 +82,14 @@ cd ${cur_dir}/install
 ./install.sh
 
 # Clean up
-if [ $? -eq 0 ]; then
-  cd ..
-  rm -rf ${tmp_dir}
-  rm -rf ${cur_dir}/install
-  rm -rf ${cur_dir}/${patch}
-  rm -rf ${cur_dir}/${iso}
-  rm -rf /home/vagrant/.vbox_version
+cd ..
+echo "==> Removing packages needed for building guest tools"
+rm -rf ${tmp_dir}
+rm -rf ${cur_dir}/install
+rm -rf ${cur_dir}/${patch}
+rm -rf ${cur_dir}/${iso}
+rm -rf /home/vagrant/.vbox_version
 
-  echo "==> Removing packages needed for building guest tools"
-  yum remove -y bzip2 gcc cpp kernel-devel kernel-headers perl patch
-else
-  echo "==> OOPS, something went wrong while installing" 1>&2
-fi
+yum remove -y bzip2 gcc cpp kernel-devel kernel-headers perl patch
+
+exit 0
